@@ -1,0 +1,6 @@
+@WebGlovo_HostAddress = http://localhost:5249
+
+GET {{WebGlovo_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
