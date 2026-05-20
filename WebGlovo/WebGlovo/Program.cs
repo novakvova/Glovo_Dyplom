@@ -4,6 +4,7 @@ using Domain;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi;
 using WebApiPizushi;
 
@@ -85,6 +86,16 @@ app.UseSwaggerUI(options =>
 app.UseAuthorization();
 
 app.MapControllers();
+
+var dir = builder.Configuration["ImagesDir"];
+string path = Path.Combine(Directory.GetCurrentDirectory(), dir);
+Directory.CreateDirectory(path);
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(path),
+    RequestPath = $"/{dir}"
+});
 
 using (var scope = app.Services.CreateScope())
 {
