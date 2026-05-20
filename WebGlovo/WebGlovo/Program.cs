@@ -1,6 +1,11 @@
+using Core.Interfaces;
+using Core.Services;
 using Domain;
+using Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
+using WebApiPizushi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +13,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbGlovoContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddIdentity<UserEntity, RoleEntity>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+})
+    .AddEntityFrameworkStores<AppDbGlovoContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IDbSeederService, DbSeederService>();
 
 builder.Services.AddControllers();
 
@@ -67,5 +85,11 @@ app.UseSwaggerUI(options =>
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<IDbSeederService>();
+    await seeder.SeedDataAsync();
+}
 
 app.Run();
