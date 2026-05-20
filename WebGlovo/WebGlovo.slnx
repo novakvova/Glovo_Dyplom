@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="Core/Core.csproj" Id="77e9eb80-2d7f-4898-819c-5d7ae9d244a0" />
+  <Project Path="Domain/Domain.csproj" Id="81c15c0c-d84a-457b-bc27-5e633bfa0f85" />
   <Project Path="WebGlovo/WebGlovo.csproj" />
 </Solution>
