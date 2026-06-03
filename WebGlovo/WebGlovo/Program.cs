@@ -54,6 +54,8 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IDbSeederService, DbSeederService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<ISmtpService, SmtpService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 builder.Services.AddControllers();
 
