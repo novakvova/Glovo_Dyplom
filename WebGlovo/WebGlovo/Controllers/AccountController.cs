@@ -1,5 +1,6 @@
 ﻿using Core.Constants;
 using Core.Interfaces;
+using Core.Mapper;
 using Core.Models.Account;
 using Core.Services;
 using Domain.Entities.Identity;
@@ -14,6 +15,7 @@ namespace WebGlovo.Controllers
     public class AccountController(IJwtTokenService jwtTokenService,
         IAccountService accountService,
         IImageService imageService,
+        UserMapper userMapper,
         UserManager<UserEntity> userManager) : ControllerBase
     {
         [HttpPost]
@@ -33,13 +35,26 @@ namespace WebGlovo.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Register([FromForm] RegisterModel model)
         {
-            var user = new UserEntity
+            var existingUser = await userManager.FindByEmailAsync(model.Email);
+            if (existingUser != null)
             {
-                Email = model.Email,
-                UserName = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName
-            };
+                return BadRequest(new
+                {
+                    status = 400,
+                    isValid = false,
+                    errors = new { Email = "Користувач з такою поштою вже існує" }
+                });
+            }
+
+            var user = userMapper.RegisterToUser(model);
+
+            //var user = new UserEntity
+            //{
+            //    Email = model.Email,
+            //    UserName = model.Email,
+            //    FirstName = model.FirstName,
+            //    LastName = model.LastName
+            //};
 
             user.Image = await imageService.SaveImageAsync(model.ImageFile!);
 

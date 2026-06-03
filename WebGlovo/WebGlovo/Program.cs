@@ -1,4 +1,5 @@
 using Core.Interfaces;
+using Core.Mapper;
 using Core.Services;
 using Domain;
 using Domain.Entities.Identity;
@@ -56,6 +57,8 @@ builder.Services.AddScoped<IDbSeederService, DbSeederService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<ISmtpService, SmtpService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+
+builder.Services.AddSingleton<UserMapper>();
 
 builder.Services.AddControllers();
 
