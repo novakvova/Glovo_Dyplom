@@ -1,11 +1,12 @@
-﻿using System.Net.Http.Headers;
-using System.Text.Json;
-using Core.Interfaces;
+﻿using Core.Interfaces;
+using Core.Mapper;
 using Core.Models.Account;
 using Core.SMTP;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace Core.Services;
 
@@ -13,7 +14,8 @@ public class AccountService(IJwtTokenService tokenService,
     UserManager<UserEntity> userManager,
     IConfiguration configuration,
     IImageService imageService,
-    ISmtpService smtpService
+    ISmtpService smtpService,
+    UserMapper userMapper
     ) : IAccountService
 {
 
@@ -49,13 +51,14 @@ public class AccountService(IJwtTokenService tokenService,
         }
         else
         {
-            var user = new UserEntity
-            {
-                Email = googleUser.Email,
-                UserName = googleUser.Email,
-                FirstName = googleUser.FirstName,
-                LastName = googleUser.LastName
-            };
+            var user = userMapper.GoogleAccountToUser(googleUser);
+            //var user = new UserEntity
+            //{
+            //    Email = googleUser.Email,
+            //    UserName = googleUser.Email,
+            //    FirstName = googleUser.FirstName,
+            //    LastName = googleUser.LastName
+            //};
 
             if (!String.IsNullOrEmpty(googleUser.Picture))
             {
