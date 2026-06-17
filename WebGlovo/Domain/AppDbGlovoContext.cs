@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Identity;
+using Domain.Entities.Shop;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,12 @@ public class AppDbGlovoContext : IdentityDbContext<UserEntity, RoleEntity, long,
         IdentityRoleClaim<long>, IdentityUserToken<long>>
 {
     public AppDbGlovoContext(DbContextOptions<AppDbGlovoContext> opt) : base(opt) { }
+
+    public DbSet<CategoryEntity> Categories { get; set; }
+    public DbSet<ProductEntity> Products { get; set; }
+    public DbSet<MerchantRoleEntity> MerchantRoles { get; set; }
+    public DbSet<MerchantEntity> Merchants { get; set; }
+    public DbSet<MerchantPartnerEntity> MerchantPartners { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -33,5 +40,8 @@ public class AppDbGlovoContext : IdentityDbContext<UserEntity, RoleEntity, long,
                 .HasForeignKey(l => l.UserId)
                 .IsRequired();
         });
+
+        builder.Entity<MerchantPartnerEntity>()
+            .HasKey(mp => new { mp.MerchantId, mp.UserId, mp.RoleId });
     }
 }

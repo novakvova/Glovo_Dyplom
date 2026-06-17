@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities.Shop;
 
@@ -36,13 +35,19 @@ new MerchantRoleEntity
  */
 
 
-
+/// <summary>
+/// Ролі працівників GLOVO
+/// </summary>
+[Table("tblMerchantRoles")]
 public class MerchantRoleEntity
 {
+    [Key]
     public long Id { get; set; }
 
+    [Required, StringLength(100)]
     public string Name { get; set; } = null!;
 
+    [StringLength(10000)]
     public string? Description { get; set; }
 
     public ICollection<MerchantPartnerEntity> MerchantPartners { get; set; }
